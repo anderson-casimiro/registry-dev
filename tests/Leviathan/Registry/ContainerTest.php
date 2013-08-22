@@ -6,7 +6,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     use DataProviderTrait;
     use FlattenerTrait;
-    
+
     public function setUp()
     {
         /**
@@ -17,7 +17,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        
+        //$this->object = null;
     }
 
     public function testSet()
@@ -36,7 +36,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->object->fill($test);
         $this->assertEquals($valueToTest, $this->object->get($expectedKey));
     }
-        
+
     /**
      * @dataProvider storageProvider
      */
@@ -62,4 +62,35 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->object->fill($test);
         $this->assertEquals(null, $this->object->get('c.old.namespace'));
     }
+
+    public function testReturnNode()
+    {
+        $storable = [
+            'db' => [
+                'dsn' => 'mysql:host=localhost;dbname=my_db',
+                'username' => 'db_user',
+                'password' => 'someAwesomePlainPassword'
+            ],
+            'library' => [
+                'vendor' => [
+                    'leviathan' => [
+                        'projects' => [
+                            'registry' => [
+                                'author' => 'Duodraco',
+                                'version' => '0.2.0',
+                                'description' => 'Registry container'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $this->object->fill($storable);
+        $this->assertEquals((object)$storable['db'], $this->object->get('db'));
+        $this->assertEquals(
+            (object)$storable['library']['vendor']['leviathan']['projects']['registry'],
+            $this->object->get('library.vendor.leviathan.projects.registry')
+        );
+    }
+
 }
