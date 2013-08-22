@@ -8,12 +8,12 @@ class RegistryTest extends ContainerTest
 {
     public function setUp()
     {
-        
+
     }
 
     public function tearDown()
     {
-        
+
     }
 
     /**
@@ -58,7 +58,7 @@ class RegistryTest extends ContainerTest
         $storeResult = Registry::set('name', 'Registry');
         $this->assertEquals(true, $storeResult);
     }
-    
+
     /**
      * @expectedException BadMethodCallException
      */
@@ -66,4 +66,10 @@ class RegistryTest extends ContainerTest
     {
         Registry::register('foo', 'bar');
     }
+
+    public function testReturnNode ()
+    {
+        //
+    }
+
 }
