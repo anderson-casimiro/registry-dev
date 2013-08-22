@@ -2,7 +2,7 @@
 
 ## Leviathan Project
 
-> Registry is a self explained library. 
+> Registry is a self explained library.
 > It provides a easy to use Registry Pattern Component for your PHP project.
 >
 > It's make use of PHP 5.4+ features to provide a good and extensible API
@@ -28,11 +28,12 @@ use Leviathan\Registry\Registry;
 class Mapper
 {
 /* ... */
+    $settings = Registry::get('db');
     $db = new \Pdo(
-      Registry::get('db.dsn'),
-      Registry::get('db.username'),
-      Registry::get('db.password'),
-      Registry::get('db.options')
+      $settings->dsn,
+      $settings->username,
+      $settings->password,
+      $settings->options
     );
 /* ... */
 ```
