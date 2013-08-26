@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="leviathan/registry" default="version">
+    <fileset id="test-files" dir="tests/">
+        <include pattern="**/*Test.php"/>
+    </fileset>
+    <fileset id="lib-files" dir="library/">
+        <include pattern="**/*.php"/>
+    </fileset>
+    <target name="version">
+        <loadfile property="project.version" file="VERSION"/>
+        <echo msg="${project.version}"/>
+    </target>
+
+    <target name="quality" depends="lint,cs,unit"/>
+
+    <target name="lint">
+      <phplint haltonfailure="true">
+	<fileset refid="lib-files"/>
+	<fileset refid="test-files"/>
+      </phplint>
+    </target>
+
+    <target name="cs">
+      <phpcodesniffer standard="PSR2" showWarnings="true" encoding="UTF-8" haltonerror="true">
+        <fileset refid="lib-files"/>
+        <formatter type="default" usefile="false"/>
+        <formatter type="checkstyle" outfile="report/checkstyle.xml"/>
+      </phpcodesniffer>
+    </target>
+
+    <target name="unit">
+        <exec command="phpunit" logoutput="/dev/stdout" checkreturn="true" dir="${project.basedir}"/>
+    </target>
+
+    <target name="loc" description="Measures and logs the size of the project" hidden="true">
+        <phploc reportType="txt" reportName="loc"  reportDirectory="report/phploc">
+            <fileset refid="lib-files"/>
+        </phploc>
+        <phploc reportType="csv" reportName="loc"  reportDirectory="report/phploc">
+            <fileset refid="lib-files"/>
+        </phploc>
+        <phploc reportType="xml" reportName="loc"  reportDirectory="report/phploc">
+            <fileset refid="lib-files"/>
+        </phploc>
+    </target>
+
+    <target name="md" description="Generate pmd.xml using PHPMD">
+        <phpmd rulesets="codesize,design,naming,unusedcode">
+            <fileset refid="lib-files" />
+            <formatter type="xml" outfile="report/pmd.xml" />
+            <formatter type="text" usefile="false" />
+        </phpmd>
+    </target>
+
+    <target name="cpd" description="Generate pmd.xml using PHPMD">
+        <phpcpd>
+            <fileset refid="lib-files" />
+            <formatter type="pmd" outfile="report/pmd-cpd.xml" />
+            <formatter type="default" usefile="false" />
+        </phpcpd>
+    </target>
+
+    <target name="pdepend" description="Generate pmd.xml using PHPMD">
+        <mkdir dir="report/pdepend"/>
+        <phpdepend>
+            <fileset refid="lib-files" />
+            <analyzer type="coderank-mode" value="method"/>
+            <logger type="jdepend-chart" outfile="report/pdepend/chart.svg"/>
+            <logger type="jdepend-xml" outfile="report/pdepend/log.xml"/>
+            <logger type="overview-pyramid" outfile="report/pdepend/pyramid.svg"/>
+            <logger type="phpunit-xml" outfile="report/pdepend/unit.xml"/>
+            <logger type="summary-xml" outfile="report/pdepend/summary.xml"/>
+        </phpdepend>
+    </target>
+
+
+</project>
